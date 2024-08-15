@@ -2,14 +2,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weatther_app/constant/enum.dart';
+import 'package:weatther_app/providers/news_provider.dart';
 import 'package:weatther_app/providers/setting_provider.dart';
 import 'package:weatther_app/screens/settings_screen_module/methods/temp.dart';
 
 class SettingsScreen extends StatelessWidget {
   final List<String> newsCategories = [
-    'general',
-    'business',
-    'technology',
+    'education',
     'sports',
     'entertainment',
     'health',
@@ -71,6 +70,12 @@ class SettingsScreen extends StatelessWidget {
                         updatedCategories.remove(category);
                       }
                       settings.updateCategories(updatedCategories);
+                      String cat = settings.selectedCategories.join(',');
+
+                      Provider.of<NewsProvider>(context, listen: false)
+                          .fetchNews(category: cat);
+
+                      print(cat);
                     }
                   },
                 );

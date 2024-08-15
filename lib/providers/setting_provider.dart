@@ -4,7 +4,7 @@ import 'package:weatther_app/constant/enum.dart';
 
 class SettingsProvider with ChangeNotifier {
   bool _useCelsius = true;
-  List<String> _selectedCategories = ['general'];
+  List<String> _selectedCategories = [];
   Temperature _temperatureUnit = Temperature.celsius;
 
   bool get useCelsius => _useCelsius;

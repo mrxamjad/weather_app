@@ -4,6 +4,7 @@ import 'package:weatther_app/providers/setting_provider.dart';
 import 'package:weatther_app/providers/weather_forcast_provider.dart';
 import 'package:weatther_app/screens/home_screen_module/home_screen.dart';
 import 'package:weatther_app/screens/settings_screen_module/settings_screen.dart';
+import 'package:weatther_app/screens/splash_screen_module/splash_screen.dart';
 
 import 'providers/weather_provider.dart';
 import 'providers/news_provider.dart';
@@ -27,9 +28,10 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: HomeScreen(),
+        home: SplashScreen(),
         routes: {
           '/settings': (context) => SettingsScreen(),
+          '/home': (context) => HomeScreen(),
         },
       ),
     );

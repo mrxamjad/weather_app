@@ -20,7 +20,7 @@ class WeatherProvider with ChangeNotifier {
         'https://api.openweathermap.org/data/2.5/weather?lat=${position.latitude}&lon=${position.longitude}&appid=$apiKey';
 
     try {
-      final response = await http.get(Uri.parse(url)).then((response) {
+      await http.get(Uri.parse(url)).then((response) {
         if (kDebugMode) {
           print("Status code for waether api call${response.statusCode}");
           if (response.statusCode == 200) {
