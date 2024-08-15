@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weatther_app/providers/weather_provider.dart';
+import 'package:weatther_app/screens/settings_screen_module/methods/temp.dart';
 
 import '../../../providers/setting_provider.dart';
 
@@ -11,27 +12,31 @@ class WeatherWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final weatherData = Provider.of<WeatherProvider>(context).weatherData;
-    final useCelsius = Provider.of<SettingsProvider>(context).useCelsius;
+    final settings = Provider.of<SettingsProvider>(context);
 
     if (weatherData.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    final temp = weatherData['list'][0]['main']['temp'];
-    final condition = weatherData['list'][0]['main']['feels_like'];
-    final tempUnit = useCelsius ? '°C' : '°F';
-    final displayTemp =
-        useCelsius ? temp - 273.15 : (temp - 273.15) * 9 / 5 + 32;
+    final temp = weatherData['main']['temp'];
+    final condition = weatherData['weather'][0]['main'];
+    // final location=weatherData['']
 
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Text('Current Weather',
-                style: Theme.of(context).textTheme.headline6),
+            const Text(
+              'Current Weather',
+            ),
             const SizedBox(height: 8),
-            Text('${displayTemp.toStringAsFixed(1)}$tempUnit'),
+            Text(Temp.convertTemp(
+                        tempInKelvin: temp, covertTo: settings.temperatureUnit)
+                    .toString() +
+                Temp.getAnnotation(temp: settings.temperatureUnit)),
+            Text(condition.toString()),
+            Text(condition.toString()),
             Text(condition.toString()),
             // Add more weather details and forecast here
           ],

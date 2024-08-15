@@ -1,7 +1,9 @@
 // screens/settings_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:weatther_app/constant/enum.dart';
 import 'package:weatther_app/providers/setting_provider.dart';
+import 'package:weatther_app/screens/settings_screen_module/methods/temp.dart';
 
 class SettingsScreen extends StatelessWidget {
   final List<String> newsCategories = [
@@ -14,6 +16,8 @@ class SettingsScreen extends StatelessWidget {
     'science',
   ];
 
+  final dropdownValue = "kelvin";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,15 +28,29 @@ class SettingsScreen extends StatelessWidget {
         builder: (context, settings, child) {
           return ListView(
             children: [
-              ListTile(
-                title: const Text('Temperature Unit'),
-                trailing: Switch(
-                  value: settings.useCelsius,
-                  onChanged: (value) {
-                    settings.toggleTemperatureUnit();
-                  },
-                ),
-                subtitle: Text(settings.useCelsius ? 'Celsius' : 'Fahrenheit'),
+              Row(
+                children: [
+                  Text("Temprature Unit"),
+                  Spacer(),
+                  DropdownButton<Temperature>(
+                    value: settings.temperatureUnit,
+                    onChanged: (value) {
+                      if (value != null) {
+                        settings.updateTempratureUnit(value);
+                      }
+                    },
+                    items: <Temperature>[
+                      Temperature.celsius,
+                      Temperature.fahrenheit,
+                      Temperature.kelvin
+                    ].map<DropdownMenuItem<Temperature>>((Temperature value) {
+                      return DropdownMenuItem<Temperature>(
+                        value: value,
+                        child: Text(Temp.getTempInString(value)),
+                      );
+                    }).toList(),
+                  ),
+                ],
               ),
               const Divider(),
               ListTile(

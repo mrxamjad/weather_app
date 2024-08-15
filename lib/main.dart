@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:weatther_app/providers/setting_provider.dart';
+import 'package:weatther_app/providers/weather_forcast_provider.dart';
 import 'package:weatther_app/screens/home_screen_module/home_screen.dart';
 import 'package:weatther_app/screens/settings_screen_module/settings_screen.dart';
 
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => WeatherProvider()),
         ChangeNotifierProvider(create: (_) => NewsProvider()),
         ChangeNotifierProvider(create: (_) => SettingsProvider()),
+        ChangeNotifierProvider(create: (_) => WeatherForcastProvider()),
       ],
       child: MaterialApp(
         title: 'Weather and News Aggregator',
