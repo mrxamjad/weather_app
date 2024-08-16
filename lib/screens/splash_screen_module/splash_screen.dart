@@ -1,9 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:weatther_app/constant/colors.dart';
 import 'package:weatther_app/constant/directory.dart';
+import 'package:weatther_app/constant/pref_key.dart';
+import 'package:weatther_app/repo/sharedprefrences_service.dart';
 
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      SharedPrefrencesService().getBoolData(PrefKey.isLogin).then((value) {
+        if (value == true) {
+          Navigator.pushNamed(context, "/home");
+        }
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +56,11 @@ class SplashScreen extends StatelessWidget {
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(24))),
                       onPressed: () {
-                        Navigator.pushNamed(context, "/home");
+                        SharedPrefrencesService()
+                            .saveBoolData(PrefKey.isLogin, true)
+                            .then((value) {
+                          Navigator.pushNamed(context, "/home");
+                        });
                       },
                       child: const Text(
                         "Get Started",
@@ -47,7 +70,7 @@ class SplashScreen extends StatelessWidget {
                             color: Colors.white),
                       )),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 58,
                 )
               ],

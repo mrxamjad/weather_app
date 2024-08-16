@@ -38,11 +38,11 @@ class TopBarWidget extends StatelessWidget {
           children: [
             Text(
               _getGreeting(),
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+              style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
             ),
             Text(
               _getCurrentDate(),
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w200),
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w200),
             ),
           ],
         ),

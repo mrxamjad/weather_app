@@ -1,4 +1,3 @@
-// providers/weather_provider.dart
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
@@ -32,7 +31,9 @@ class WeatherForcastProvider with ChangeNotifier {
         }
       });
     } catch (error) {
-      print('Error fetching weather  forcast data: $error');
+      if (kDebugMode) {
+        print('Error fetching weather  forcast data: $error');
+      }
     } finally {
       _isLoading = false;
       notifyListeners();

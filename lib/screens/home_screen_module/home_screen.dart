@@ -1,14 +1,19 @@
 // screens/home_screen.dart
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 import 'package:weatther_app/constant/directory.dart';
+import 'package:weatther_app/constant/enum.dart';
+import 'package:weatther_app/constant/pref_key.dart';
 import 'package:weatther_app/providers/news_provider.dart';
 import 'package:weatther_app/providers/setting_provider.dart';
 import 'package:weatther_app/providers/weather_forcast_provider.dart';
 import 'package:weatther_app/providers/weather_provider.dart';
 import 'package:weatther_app/repo/fetch_current_location.dart';
+import 'package:weatther_app/repo/news_sentiment.dart';
+import 'package:weatther_app/repo/sharedprefrences_service.dart';
 import 'package:weatther_app/screens/home_screen_module/widgets/news_widget.dart';
 import 'package:weatther_app/screens/home_screen_module/widgets/top_bar_widget.dart';
 import 'package:weatther_app/screens/home_screen_module/widgets/weather_forcast_widget.dart';
@@ -19,6 +24,7 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _HomeScreenState createState() => _HomeScreenState();
 }
 
@@ -27,19 +33,44 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     // Fetch weather and news data when the screen loads
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      SharedPrefrencesService().getStringData(PrefKey.tempUnit).then((value) {
+        if (value != null) {
+          Temperature tmp;
+          if (value == "Temperature.celsius") {
+            tmp = Temperature.celsius;
+          } else if (value == "Temperature.fahrenheit") {
+            tmp = Temperature.fahrenheit;
+          } else {
+            tmp = Temperature.kelvin;
+          }
+
+          Provider.of<SettingsProvider>(context, listen: false)
+              .updateTempratureUnit(tmp);
+        }
+      });
+    });
     Future.microtask(() {
       final settings = Provider.of<SettingsProvider>(context, listen: false);
-      print(settings.selectedCategories.toList());
+      if (kDebugMode) {
+        print(settings.selectedCategories.toList());
+      }
       LocationSerice.getCurrentLocation().then((latlng) {
         if (latlng != null) {
           Provider.of<WeatherProvider>(context, listen: false)
-              .fetchWeatherData(latlng);
+              .fetchWeatherData(latlng)
+              .then((value) {
+            final mood = Provider.of<WeatherProvider>(context, listen: false)
+                .weatherData['weather'][0]['main'];
+            if (mood != null) {
+              Provider.of<NewsProvider>(context, listen: false).fetchNews(
+                  weather: NewsSentiment().weatherSentimentMap[mood] ?? "");
+            }
+          });
           Provider.of<WeatherForcastProvider>(context, listen: false)
               .fetchWeatherForcastData(latlng);
         } else {}
       });
-
-      Provider.of<NewsProvider>(context, listen: false).fetchNews();
     });
   }
 
@@ -51,22 +82,33 @@ class _HomeScreenState extends State<HomeScreen> {
           Image.asset(Dir.homeBg),
           const SafeArea(
             child: SingleChildScrollView(
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 28),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    TopBarWidget(),
-                    SizedBox(
-                      height: 42,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 28),
+                    child: Column(
+                      children: [
+                        SizedBox(height: 24),
+                        TopBarWidget(),
+                        SizedBox(
+                          height: 42,
+                        ),
+                        WeatherWidget(),
+                        SizedBox(height: 24),
+                        SizedBox(height: 288, child: WeatherForcastWidget()),
+                        SizedBox(
+                          height: 24,
+                        ),
+                      ],
                     ),
-                    WeatherWidget(),
-                    SizedBox(height: 24),
-                    SizedBox(height: 288, child: WeatherForcastWidget()),
-                    NewsWidget(),
-                  ],
-                ),
+                  ),
+                  NewsWidget(),
+                  SizedBox(
+                    height: 40,
+                  ),
+                ],
               ),
             ),
           ),

@@ -31,7 +31,9 @@ class WeatherProvider with ChangeNotifier {
         }
       });
     } catch (error) {
-      print('Error fetching weather data: $error');
+      if (kDebugMode) {
+        print('Error fetching weather data: $error');
+      }
     } finally {
       _isLoading = false;
       notifyListeners();
