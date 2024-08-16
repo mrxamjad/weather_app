@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
+import 'package:weatther_app/constant/colors.dart';
 import 'package:weatther_app/methods/get_ist_from_timestamp.dart';
 import 'package:weatther_app/providers/setting_provider.dart';
 import 'package:weatther_app/providers/weather_forcast_provider.dart';
+import 'package:weatther_app/screens/home_screen_module/methods/get_weather_image_by_title.dart';
 import 'package:weatther_app/screens/settings_screen_module/methods/temp.dart';
 
 class WeatherForcastWidget extends StatelessWidget {
@@ -18,77 +20,116 @@ class WeatherForcastWidget extends StatelessWidget {
     final settings = Provider.of<SettingsProvider>(context);
 
     if (isWeatherForcastLoading) {
-      return SizedBox(child: CircularProgressIndicator());
+      return const SizedBox(child: CircularProgressIndicator());
     } else {
-      final weatherForcastProvider =
-          Provider.of<WeatherForcastProvider>(context).weatherData;
-      final String country = weatherForcastProvider["city"]["country"];
-      final String city = weatherForcastProvider["city"]["name"];
-
       return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [Text(city), Text(country)],
-          ),
-          Expanded(
-            child: Row(
+          RichText(
+            text: const TextSpan(
+              text: 'For Next',
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.blueGrey,
+              ),
               children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      Text("Date"),
-                      Text(
-                          "Temprature (${Temp.getAnnotation(temp: settings.temperatureUnit)})"),
-                      Text("Pressure"),
-                      Text("Humidity"),
-                      Text("Weather"),
-                      Text("Descroption"),
-                    ],
+                TextSpan(
+                  text: ' Five days',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                Expanded(
-                  child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      // physics: NeverScrollableScrollPhysics(),
-                      itemCount: weatherForcastData.length,
-                      itemBuilder: (context, index) {
-                        double? tempKel = double.tryParse(
-                            weatherForcastData[index]['main']["temp"]
-                                .toString());
-                        double? pressure = double.tryParse(
-                            weatherForcastData[index]['main']["pressure"]
-                                .toString());
-
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            children: [
-                              Text(getISTTimeFromTimestamp(
-                                      weatherForcastData[index]['dt'])
-                                  .toString()),
-                              Text(tempKel != null
-                                  ? Temp.convertTemp(
-                                          tempInKelvin: tempKel,
-                                          covertTo: settings.temperatureUnit)
-                                      .toString()
-                                  : "--"),
-                              Text("${pressure ?? "--"}"),
-                              Text(weatherForcastData[index]['main']["humidity"]
-                                  .toString()),
-                              Text(weatherForcastData[index]['weather'][0]
-                                      ["main"]
-                                  .toString()),
-                              Text(weatherForcastData[index]['weather'][0]
-                                      ["description"]
-                                  .toString()),
-                            ],
-                          ),
-                        );
-                      }),
-                ),
               ],
+            ),
+          ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.only(top: 5),
+              decoration: BoxDecoration(
+                color: Clr.white.withOpacity(0.75),
+                borderRadius: BorderRadius.circular(24),
+              ),
+              child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  // physics: NeverScrollableScrollPhysics(),
+                  itemCount: weatherForcastData.length,
+                  itemBuilder: (context, index) {
+                    double? tempKel = double.tryParse(
+                        weatherForcastData[index]['main']["temp"].toString());
+                    double? pressure = double.tryParse(weatherForcastData[index]
+                            ['main']["pressure"]
+                        .toString());
+
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            border: Border.all(color: Clr.white),
+                            borderRadius: BorderRadius.circular(24)),
+                        child: Column(
+                          children: [
+                            Text(
+                                getISTTimeFromTimestamp(
+                                        weatherForcastData[index]['dt'])
+                                    .toString(),
+                                style: TextStyle(
+                                    fontSize: 14, color: Clr.greyAEAEAE)),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              tempKel != null
+                                  ? Temp.convertTemp(
+                                              tempInKelvin: tempKel,
+                                              covertTo:
+                                                  settings.temperatureUnit)
+                                          .toString() +
+                                      Temp.getAnnotation(
+                                          temp: settings.temperatureUnit)
+                                  : "--",
+                              style: const TextStyle(
+                                  fontSize: 22, fontWeight: FontWeight.w500),
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text("${pressure!.toInt().toString()} hPa",
+                                style: TextStyle(
+                                    fontSize: 12, color: Clr.greyAEAEAE)),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              weatherForcastData[index]['main']["humidity"]
+                                      .toString() +
+                                  "%".toString(),
+                              style: TextStyle(
+                                  fontSize: 12, color: Clr.greyAEAEAE),
+                            ),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Text(weatherForcastData[index]['weather'][0]["main"]
+                                .toString()),
+                            const SizedBox(
+                              height: 5,
+                            ),
+                            Image.asset(
+                              getImageDirByTitle(weatherForcastData[index]
+                                      ['weather'][0]["main"]
+                                  .toString()),
+                              height: 64,
+                              width: 64,
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
             ),
           ),
         ],
