@@ -8,11 +8,11 @@ The design of this app is inspired by the minimalist and modern design principle
 
 ## Demo
 
-Check out the live demo of the Weather App [here](https://www.example.com).
+Check out the live demo of the Weather App [SEE DEMO APP](https://github.com/mrxamjad/weather_app/blob/main/DemoExample/DemoApp.mp4).
 
 ## Figma UI
 
-Check out the UI Reference of the Weather App [here](<https://www.figma.com/design/LWs1t1gDF0m5epENcG3VcR/Weather-App---Glassmorphism-Design-Style-(Community)?node-id=1201-8&t=c660NokIuArPHFS2-0>).
+Check out the UI Reference of the Weather App [FIGMA UI](<https://www.figma.com/design/LWs1t1gDF0m5epENcG3VcR/Weather-App---Glassmorphism-Design-Style-(Community)?node-id=1201-8&t=c660NokIuArPHFS2-0>).
 
 ## Project Details
 
