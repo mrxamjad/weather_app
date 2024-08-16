@@ -60,12 +60,11 @@ class _HomeScreenState extends State<HomeScreen> {
           Provider.of<WeatherProvider>(context, listen: false)
               .fetchWeatherData(latlng)
               .then((value) {
-            final mood = Provider.of<WeatherProvider>(context, listen: false)
-                .weatherData['weather'][0]['main'];
-            if (mood != null) {
-              Provider.of<NewsProvider>(context, listen: false).fetchNews(
-                  weather: NewsSentiment().weatherSentimentMap[mood] ?? "");
-            }
+            // final mood = Provider.of<WeatherProvider>(context, listen: false)
+            //     .weatherData['weather'][0]['main'];
+            // if (mood != null) {
+            Provider.of<NewsProvider>(context, listen: false).fetchNews();
+            // }
           });
           Provider.of<WeatherForcastProvider>(context, listen: false)
               .fetchWeatherForcastData(latlng);
