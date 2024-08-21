@@ -12,7 +12,6 @@ import 'package:weatther_app/providers/setting_provider.dart';
 import 'package:weatther_app/providers/weather_forcast_provider.dart';
 import 'package:weatther_app/providers/weather_provider.dart';
 import 'package:weatther_app/repo/fetch_current_location.dart';
-import 'package:weatther_app/repo/news_sentiment.dart';
 import 'package:weatther_app/repo/sharedprefrences_service.dart';
 import 'package:weatther_app/screens/home_screen_module/widgets/news_widget.dart';
 import 'package:weatther_app/screens/home_screen_module/widgets/top_bar_widget.dart';
@@ -60,11 +59,12 @@ class _HomeScreenState extends State<HomeScreen> {
           Provider.of<WeatherProvider>(context, listen: false)
               .fetchWeatherData(latlng)
               .then((value) {
-            // final mood = Provider.of<WeatherProvider>(context, listen: false)
-            //     .weatherData['weather'][0]['main'];
-            // if (mood != null) {
-            Provider.of<NewsProvider>(context, listen: false).fetchNews();
-            // }
+            final mood = Provider.of<WeatherProvider>(context, listen: false)
+                .weatherData['weather'][0]['main'];
+            if (mood != null) {
+              Provider.of<NewsProvider>(context, listen: false)
+                  .fetchNews(category: "");
+            }
           });
           Provider.of<WeatherForcastProvider>(context, listen: false)
               .fetchWeatherForcastData(latlng);

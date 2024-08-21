@@ -7,7 +7,6 @@ import 'package:weatther_app/constant/pref_key.dart';
 import 'package:weatther_app/providers/news_provider.dart';
 import 'package:weatther_app/providers/setting_provider.dart';
 import 'package:weatther_app/providers/weather_provider.dart';
-import 'package:weatther_app/repo/news_sentiment.dart';
 import 'package:weatther_app/repo/sharedprefrences_service.dart';
 import 'package:weatther_app/screens/settings_screen_module/methods/temp.dart';
 
@@ -94,10 +93,9 @@ class SettingsScreen extends StatelessWidget {
 
                       Provider.of<NewsProvider>(context, listen: false)
                           .fetchNews(
-                              category: cat,
-                              weather:
-                                  NewsSentiment().weatherSentimentMap[mood] ??
-                                      "");
+                        category: cat,
+                        weather: mood.toString(),
+                      );
                     }
                   },
                 );
