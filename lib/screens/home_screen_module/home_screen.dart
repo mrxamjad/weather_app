@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch weather and news data when the screen loads
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       SharedPrefrencesService().getStringData(PrefKey.tempUnit).then((value) {
         if (value != null) {

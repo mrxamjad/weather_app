@@ -28,6 +28,7 @@ class NewsProvider with ChangeNotifier {
 
     try {
       final response = await http.get(Uri.parse(url));
+      print("Status code for news api call${response.statusCode}");
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
