@@ -18,13 +18,15 @@ class NewsProvider with ChangeNotifier {
       {String weather = '',
       String country = "in",
       String category = ""}) async {
+    print(
+        "---------------------------->Fetching news data with mood $weather and category $category");
     _isLoading = true;
     notifyListeners();
 
     const apiKey = 'pub_50971ee161dc5ddef00cb1b095c1f181a5b92';
 
     String url =
-        'https://newsdata.io/api/1/latest?apikey=$apiKey&language=en&country=in';
+        'https://newsdata.io/api/1/latest?apikey=$apiKey&language=en&country=in${category == "" ? "" : "&category=$category"}${weather.isNotEmpty ? "&q=$weather" : ""}';
 
     try {
       final response = await http.get(Uri.parse(url));

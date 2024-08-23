@@ -83,7 +83,10 @@ class NewsWidget extends StatelessWidget {
                             if (settings.selectedCategories
                                 .contains(category)) {
                               selectedCategories.remove(category);
-                              newsProvider.fetchNews(category: mood);
+                              // newsProvider.fetchNews(
+                              //     weather: mood,
+                              //     country: "in",
+                              //     category: selectedCategories.join(','));
                             } else {
                               selectedCategories.clear();
 
@@ -91,8 +94,8 @@ class NewsWidget extends StatelessWidget {
                             }
 
                             newsProvider.fetchNews(
-                              category: selectedCategories.join(','),
-                            );
+                                category: selectedCategories.join(','),
+                                weather: mood);
                             settings.updateCategories(selectedCategories);
                           },
                           child: Container(
