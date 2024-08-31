@@ -29,10 +29,10 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: SplashScreen(),
+        home: const SplashScreen(),
         routes: {
           '/settings': (context) => SettingsScreen(),
-          '/home': (context) => HomeScreen(),
+          '/home': (context) => const HomeScreen(),
         },
       ),
     );

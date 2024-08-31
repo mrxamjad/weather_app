@@ -8,7 +8,6 @@ import 'package:weatther_app/methods/url_launcher.dart';
 import 'package:weatther_app/providers/news_provider.dart';
 import 'package:weatther_app/providers/setting_provider.dart';
 import 'package:weatther_app/providers/weather_provider.dart';
-import 'package:weatther_app/repo/news_sentiment.dart';
 
 class NewsWidget extends StatelessWidget {
   const NewsWidget({super.key});
@@ -84,7 +83,10 @@ class NewsWidget extends StatelessWidget {
                             if (settings.selectedCategories
                                 .contains(category)) {
                               selectedCategories.remove(category);
-                              newsProvider.fetchNews(category: "");
+                              // newsProvider.fetchNews(
+                              //     weather: mood,
+                              //     country: "in",
+                              //     category: selectedCategories.join(','));
                             } else {
                               selectedCategories.clear();
 
@@ -92,11 +94,8 @@ class NewsWidget extends StatelessWidget {
                             }
 
                             newsProvider.fetchNews(
-                              category: selectedCategories.join(','),
-                              weather:
-                                  NewsSentiment().weatherSentimentMap[mood] ??
-                                      "",
-                            );
+                                category: selectedCategories.join(','),
+                                weather: mood);
                             settings.updateCategories(selectedCategories);
                           },
                           child: Container(
@@ -131,6 +130,7 @@ class NewsWidget extends StatelessWidget {
                     itemCount: newsProvider.news.length,
                     itemBuilder: (context, index) {
                       final article = newsProvider.news[index];
+
                       return GestureDetector(
                         onTap: () {
                           launchURL(article["link"]);
@@ -147,9 +147,9 @@ class NewsWidget extends StatelessWidget {
                               child: Column(
                                 children: [
                                   Container(
-                                    height: 200,
-                                    width: MediaQuery.of(context).size.width,
-                                    decoration: BoxDecoration(
+                                      height: 200,
+                                      width: MediaQuery.of(context).size.width,
+                                      decoration: BoxDecoration(
                                         borderRadius: const BorderRadius.only(
                                             topLeft: Radius.circular(24),
                                             topRight: Radius.circular(24)),
@@ -160,8 +160,13 @@ class NewsWidget extends StatelessWidget {
                                                     article['image_url'],
                                                   )
                                                 : const AssetImage(Dir.noImage)
-                                                    as ImageProvider)),
-                                  ),
+                                                    as ImageProvider,
+                                            onError: (exception, stackTrace) {
+                                              // Handle image loading error here
+                                              const AssetImage(Dir.noImage)
+                                                  as ImageProvider;
+                                            }),
+                                      )),
                                   Expanded(
                                     child: Padding(
                                       padding: const EdgeInsets.only(
@@ -228,6 +233,7 @@ class NewsWidget extends StatelessWidget {
                                                 fontWeight: FontWeight.w300,
                                                 color: Clr.greyAEAEAE),
                                           ),
+                                          Spacer(),
                                           Align(
                                             alignment: Alignment.bottomRight,
                                             child: Text(

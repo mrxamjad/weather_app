@@ -1,8 +1,11 @@
 // providers/news_provider.dart
+import 'package:dart_sentiment/dart_sentiment.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
+import 'package:weatther_app/repo/news_sentiment.dart';
 
 class NewsProvider with ChangeNotifier {
   List<Map<String, dynamic>> _news = [];
@@ -15,6 +18,8 @@ class NewsProvider with ChangeNotifier {
       {String weather = '',
       String country = "in",
       String category = ""}) async {
+    print(
+        "---------------------------->Fetching news data with mood $weather and category $category");
     _isLoading = true;
     notifyListeners();
 
@@ -25,11 +30,28 @@ class NewsProvider with ChangeNotifier {
 
     try {
       final response = await http.get(Uri.parse(url));
+      print("Status code for news api call${response.statusCode}");
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
 
         _news = List<Map<String, dynamic>>.from(data['results']);
+        final sentiment = Sentiment();
+
+        final modifiedNews = _news.map((e) {
+          final sen = sentiment.analysis(e['title']);
+          final weather = NewsSentiment.getWeatherType(sen["comparative"]);
+
+          if (weather == category) {
+            return e;
+          }
+
+          return e;
+        }).toList();
+
+        _news = modifiedNews;
+        print("Printing modified news");
+        print(modifiedNews.toList());
       } else {
         throw Exception('Failed to load news');
       }
